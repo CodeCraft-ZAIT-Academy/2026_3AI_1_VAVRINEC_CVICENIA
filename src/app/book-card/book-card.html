@@ -13,13 +13,13 @@
 
 <button (click)="toggleDetails()">
   Zobraziť / skryť detail
-  @if (showDetails) {
+</button>
+@if (showDetails) {
     <div>
       <p>Rok vydania: {{ book().year }}</p>
       <p>Žáner: {{ book().genre }}</p>
     </div>
   }
-</button>
 
 <button (click)="toggleFavorite()">
   @if (favorite) {
