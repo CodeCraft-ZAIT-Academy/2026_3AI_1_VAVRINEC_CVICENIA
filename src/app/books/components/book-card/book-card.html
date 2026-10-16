@@ -54,7 +54,7 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button matButton (click)="toggleDetails()">
+      <button matButton="filled" (click)="toggleDetails()">
         @if (showDetails) { Skryť detail } @else { Zobraziť detail }
       </button>
 
@@ -63,12 +63,16 @@
       </button>
 
       @if (!book().available) {
-        <button matButton="outlined" (click)="giveBack()">Vrátiť</button>
+        <button matButton="filled" (click)="giveBack()">Vrátiť</button>
       }
 
       <span class="spacer"></span>
 
-      <button matIconButton (click)="toggleFavorite()">
+      <button
+        matIconButton
+        class="book-action-icon"
+        [attr.aria-label]="book().favorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené'"
+        (click)="toggleFavorite()">
         @if (book().favorite) {
           <mat-icon class="favorite-icon">star</mat-icon>
         } @else {
@@ -76,11 +80,11 @@
         }
       </button>
 
-      <button matIconButton (click)="startEdit()">
+      <button matIconButton class="book-action-icon" aria-label="Upraviť knihu" (click)="startEdit()">
         <mat-icon>edit</mat-icon>
       </button>
 
-      <button matIconButton (click)="askDelete()">
+      <button matIconButton class="book-action-icon" aria-label="Zmazať knihu" (click)="askDelete()">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-card-actions>

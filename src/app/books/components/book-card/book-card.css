@@ -13,25 +13,16 @@ book-card {
   color: #475569;
 }
 
-
-.book-card button {
-  margin-top: 12px;
-  margin-right: 8px;
-  padding: 8px 14px;
-  border: none;
+.book-card .book-action-icon {
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   background-color: #2563eb;
   color: white;
-  cursor: pointer;
 }
 
-.book-card button:hover {
+.book-card .book-action-icon:hover {
   background-color: #1d4ed8;
-}
-
-.book-card button:disabled {
-  background-color: #94a3b8;
-  cursor: not-allowed;
 }
 
 .book-card.unavailable {
