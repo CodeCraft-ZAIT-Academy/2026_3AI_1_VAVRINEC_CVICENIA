@@ -1,0 +1,26 @@
+.table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+th {
+  background-color: #eaf0f6;
+  color: #1f3a5f;
+}
+
+.actions {
+  white-space: nowrap;
+}

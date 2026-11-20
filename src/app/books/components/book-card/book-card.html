@@ -1,6 +1,6 @@
 <mat-card
   class="book-card"
-  [class.unavailable]="!book().available && !editing()"
+  [class.unavailable]="!book().available"
   [class.favorite]="book().favorite"
   [style.border-left-color]="genreColor()"
 >
@@ -54,87 +54,38 @@
     </span>
   </mat-card-header>
 
-  @if (editing()) {
-    <mat-card-content>
-      <app-book-form
-        [book]="book()"
-        (saved)="saveEdit($event)"
-        (cancelled)="cancelEdit()"
-      ></app-book-form>
-    </mat-card-content>
-  } @else if (confirmingDelete()) {
-    <mat-card-content class="confirm">
-      <p>
-        Naozaj chceš zmazať knihu <strong>{{ book().title }}</strong
-        >?
-      </p>
-    </mat-card-content>
-    <mat-card-actions>
-      <button matButton (click)="cancelDelete()">Nie, ponechať</button>
-      <button matButton="filled" class="danger" (click)="confirmDelete()">Áno, zmazať</button>
-    </mat-card-actions>
-  } @else {
-    <mat-card-content>
-      @if (book().available) {
-        <p>Kniha je dostupná.</p>
+  <mat-card-content>
+    @if (book().available) {
+      <p>Kniha je dostupná.</p>
+    } @else {
+      <p>Kniha je momentálne vypožičaná.</p>
+    }
+  </mat-card-content>
+
+  <mat-card-actions>
+    <a matButton="filled" [routerLink]="['/books', book().id]">Detail</a>
+
+    <button matButton="filled" [disabled]="!book().available" (click)="borrow()">
+      Vypožičať
+    </button>
+
+    @if (!book().available) {
+      <button matButton="filled" (click)="giveBack()">Vrátiť</button>
+    }
+
+    <span class="spacer"></span>
+
+    <button
+      matIconButton
+      class="book-action-icon"
+      [attr.aria-label]="book().favorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené'"
+      (click)="toggleFavorite()"
+    >
+      @if (book().favorite) {
+        <mat-icon class="favorite-icon">star</mat-icon>
       } @else {
-        <p>Kniha je momentálne vypožičaná.</p>
+        <mat-icon>star_border</mat-icon>
       }
-
-      @if (showDetails()) {
-        <app-book-detail [book]="book()" [color]="genreColor()"></app-book-detail>
-      }
-    </mat-card-content>
-
-    <mat-card-actions>
-      <button matButton="filled" (click)="toggleDetails()">
-        @if (showDetails()) {
-          Skryť detail
-        } @else {
-          Zobraziť detail
-        }
-      </button>
-
-      <button matButton="filled" [disabled]="!book().available" (click)="borrow()">
-        Vypožičať
-      </button>
-
-      @if (!book().available) {
-        <button matButton="filled" (click)="giveBack()">Vrátiť</button>
-      }
-
-      <span class="spacer"></span>
-
-      <button
-        matIconButton
-        class="book-action-icon"
-        [attr.aria-label]="book().favorite ? 'Odobrať z obľúbených' : 'Pridať medzi obľúbené'"
-        (click)="toggleFavorite()"
-      >
-        @if (book().favorite) {
-          <mat-icon class="favorite-icon">star</mat-icon>
-        } @else {
-          <mat-icon>star_border</mat-icon>
-        }
-      </button>
-
-      <button
-        matIconButton
-        class="book-action-icon"
-        aria-label="Upraviť knihu"
-        (click)="startEdit()"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-
-      <button
-        matIconButton
-        class="book-action-icon"
-        aria-label="Zmazať knihu"
-        (click)="askDelete()"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-card-actions>
-  }
+    </button>
+  </mat-card-actions>
 </mat-card>
