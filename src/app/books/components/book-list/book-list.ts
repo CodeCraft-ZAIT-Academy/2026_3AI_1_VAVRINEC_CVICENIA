@@ -4,11 +4,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { BookCard } from '../book-card/book-card';
 import { Book } from '../../book';
 import { BookService } from '../../book.service';
-import { ServerBookList } from '../server-book-list/server-book-list';
+import { BookFilterPipe } from '../../book-filter-pipe';
 
 @Component({
   selector: 'app-book-list',
@@ -20,27 +21,45 @@ import { ServerBookList } from '../server-book-list/server-book-list';
     MatInputModule,
     MatSelectModule,
     MatButtonToggleModule,
-    ServerBookList,
-    BookCard,
-    FormsModule
+    MatButtonModule,
+    BookFilterPipe,
   ],
+  providers: [BookFilterPipe],
   templateUrl: './book-list.html',
   styleUrl: './book-list.css',
 })
 export class BookList {
   private bookService = inject(BookService);
+  private bookFilter = inject(BookFilterPipe);
   readonly books = this.bookService.books;
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
 
   readonly searchText = signal('');
   readonly availability = signal('all');
   readonly sortBy = signal('none');
+  readonly favoritesOnly = signal(false);
+  readonly totalBooks = computed(() => this.books().length);
 
   readonly visibleBooks = computed(() =>
-    this.bookService.getFilteredBooks(this.searchText(), this.availability(), this.sortBy()),
+    this.bookFilter.transform(
+      this.bookService.getSortedBooks(this.sortBy()),
+      this.searchText(),
+      this.availability(),
+      this.favoritesOnly(),
+    ),
   );
 
   clearSearch(): void {
     this.searchText.set('');
+    this.firstPage();
+  }
+
+  resetFilters(): void {
+    this.searchText.set('');
+    this.availability.set('all');
+    this.sortBy.set('none');
+    this.favoritesOnly.set(false);
     this.firstPage();
   }
 

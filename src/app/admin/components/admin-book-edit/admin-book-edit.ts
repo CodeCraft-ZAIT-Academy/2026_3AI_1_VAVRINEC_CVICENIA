@@ -18,6 +18,8 @@ export class AdminBookEdit {
   private router = inject(Router);
   readonly isEditMode = computed(() => this.id() !== undefined);
   readonly book = computed(() => this.bookService.getBookById(Number(this.id())));
+  readonly loading = this.bookService.loading;
+  readonly loadError = this.bookService.loadError;
 
   save(book: Book): void {
     if (this.isEditMode()) {

@@ -1,5 +1,3 @@
-<app-server-book-list />
-
 <section>
   <h2>Zoznam kníh</h2>
 
@@ -31,6 +29,13 @@
       <mat-button-toggle value="borrowed">Vypožičané</mat-button-toggle>
     </mat-button-toggle-group>
 
+    <mat-button-toggle
+      [checked]="favoritesOnly()"
+      (change)="favoritesOnly.set($event.source.checked); firstPage()"
+    >
+      Iba obľúbené
+    </mat-button-toggle>
+
     <mat-select
       name="sortBy"
       [ngModel]="sortBy()"
@@ -41,7 +46,15 @@
       <mat-option value="year">Roku (najnovšie)</mat-option>
       <mat-option value="rating">Hodnotenia (najlepšie)</mat-option>
     </mat-select>
+
+    <button matButton (click)="resetFilters()">Zrušiť filtre</button>
   </div>
+
+  <p class="stats">
+    Všetkých kníh: {{ totalBooks() }}
+    · Dostupných: {{ (books() | bookFilter: '' : 'available').length }}
+    · Obľúbených: {{ (books() | bookFilter: '' : 'all' : true).length }}
+  </p>
 
   @if (visibleBooks().length > 0) {
     <p>Zobrazené knihy {{ firstShown() }} – {{ lastShown() }} z {{ visibleBooks().length }}</p>
@@ -67,7 +80,11 @@
       </app-book-card>
     }
   } @empty {
-    @if (books().length === 0) {
+    @if (loading()) {
+      <p role="status">Načítavam knihy…</p>
+    } @else if (loadError()) {
+      <p role="alert">{{ loadError() }}</p>
+    } @else if (books().length === 0) {
       <p class="empty">V knižnici zatiaľ nie sú žiadne knihy.</p>
     } @else {
       <p class="empty">Nenašli sa žiadne knihy. Skús zmeniť hľadanie alebo filter.</p>
